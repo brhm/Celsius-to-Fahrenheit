@@ -1,6 +1,6 @@
 # Celsius-to-Fahrenheit
 
-[![Python CI with Lint&Test](https://github.com/aytitech/Celsius-to-Fahrenheit/actions/workflows/ci.yml/badge.svg)](https://github.com/aytitech/Celsius-to-Fahrenheit/actions/workflows/ci.yml)
+[![Python CI with Lint&Test](https://github.com/brhm/Celsius-to-Fahrenheit/actions/workflows/ci.yml/badge.svg)](https://github.com/brhm/Celsius-to-Fahrenheit/actions/workflows/ci.yml)
 
 
 
