@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Git Checkout Adimi
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6.1.0
     - name: Python 3.10 Kurma Adimi
       uses: actions/setup-python@v3
       with:
