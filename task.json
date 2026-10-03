@@ -1,0 +1,23 @@
+{
+  "family": "ctf",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "ctf",
+      "image": "brhmkskn/celsius-to-fahrenheit:latest",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}
