@@ -28,5 +28,12 @@ jobs:
 
       - name: Test Kubernetes connection
         run: |
-          kubectl version
-          kubectl get nodes
+          echo "=== kubectl version ==="
+          kubectl version --client
+
+          echo "=== Kubernetes API address ==="
+          kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
+          echo
+
+          echo "=== Cluster test ==="
+          kubectl get nodes -v=6
