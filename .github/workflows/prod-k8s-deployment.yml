@@ -1,18 +1,28 @@
 name: Prod Kubernetes Deployment
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Docker Release"]
+    types:
+      - completed
 
 permissions:
   contents: read
 
+env:
+  DOCKERHUB_USERNAME: brhmkskn
+  DOCKERHUB_REPOSITORY: celsius-to-fahrenheit
+
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout deployed commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
@@ -26,14 +36,25 @@ jobs:
           echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
-      - name: Test Kubernetes connection
+      - name: Verify Kubernetes connection
+        run: kubectl get nodes
+
+      - name: Deploy Kubernetes manifests
         run: |
-          echo "=== kubectl version ==="
-          kubectl version --client
+          kubectl apply -f k8s/deployment.yml
+          kubectl apply -f k8s/service.yml
 
-          echo "=== Kubernetes API address ==="
-          kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
-          echo
+      - name: Deploy released Docker image
+        run: |
+          kubectl set image deployment/celsius-to-fahrenheit \
+            celsius-to-fahrenheit=${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}
 
-          echo "=== Cluster test ==="
-          kubectl get nodes -v=6
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/celsius-to-fahrenheit --timeout=120s
+
+      - name: Show deployment
+        run: |
+          kubectl get deployments
+          kubectl get pods -o wide
+          kubectl get services
