@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celsius-to-fahrenheit
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: celsius-to-fahrenheit
+
+  template:
+    metadata:
+      labels:
+        app: celsius-to-fahrenheit
+
+    spec:
+      containers:
+        - name: celsius-to-fahrenheit
+          image: brhmkskn/celsius-to-fahrenheit:latest
+
+          ports:
+            - containerPort: 8080
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
